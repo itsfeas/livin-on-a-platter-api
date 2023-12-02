@@ -16,3 +16,18 @@ func initialize() (*firebase.App, error) {
 	}
 	return app, nil
 }
+
+func cloudStorageCustomBucket(app *firebase.App) {
+	client, err := app.Storage(context.Background())
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// [START cloud_storage_custom_bucket_golang]
+	bucket, err := client.Bucket("loap-img-storage")
+	// [END cloud_storage_custom_bucket_golang]
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Created bucket handle: %v\n", bucket)
+}
