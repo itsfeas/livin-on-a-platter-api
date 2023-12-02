@@ -2,15 +2,17 @@ package firebase
 
 import (
 	"context"
-	"log"
+	"fmt"
 
 	firebase "firebase.google.com/go/v4"
+	"google.golang.org/api/option"
 )
 
-func initialize() *firebase.App {
-	app, err := firebase.NewApp(context.Background(), nil)
+func initialize() (*firebase.App, error) {
+	opt := option.WithCredentialsFile("firebase-adminsdk.json")
+	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		return nil, fmt.Errorf("error initializing app: %v", err)
 	}
-	return app
+	return app, nil
 }
