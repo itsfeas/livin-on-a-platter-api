@@ -1,16 +1,15 @@
-package cmd
+package main
 
 import (
 	"fmt"
-	"net/http"
 	"livin-on-a-platter-api/internal/middleware"
+	"net/http"
 )
 
 // YourHandler is the main handler for your route
 func YourHandler(w http.ResponseWriter, r *http.Request) {
-	// Your logic here
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello, Middleware!"))
+	fmt.Println("message received")
 }
 
 func main() {
@@ -18,12 +17,12 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hi there, I'm livin-on-a-platter-api!</h1>")
 	})
 
-	handler := http.HandleFunc("/api/", YourHandler)
-	http.HandleFunc(middleware.MiddlewareManager(
-		handler, middleware.SuccessResponseMiddleware, middleware.ErrorHandler)
-	)
+	mainHandler := http.HandlerFunc(YourHandler)
+	manager := middleware.MiddlewareManager(mainHandler, middleware.SuccessResponseMiddleware, middleware.ErrorHandler)
 
 	fmt.Println("Server is listening on port 8080...")
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", manager); err != nil {
+		fmt.Printf("Error starting the server: %v\n", err)
+	}
 
 }

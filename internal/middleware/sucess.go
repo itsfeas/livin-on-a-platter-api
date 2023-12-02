@@ -18,9 +18,7 @@ func SuccessResponseMiddleware(next http.Handler) http.Handler {
 		if customResponseWriter.statusCode >= http.StatusOK && customResponseWriter.statusCode < http.StatusMultipleChoices {
 			// Create a generic success response
 			successResponse := map[string]interface{}{
-				"success": true,
-				"message": "Request was successful.",
-				// You can include additional data if needed
+				"status": "ok",
 			}
 
 			// Convert the success response to JSON
