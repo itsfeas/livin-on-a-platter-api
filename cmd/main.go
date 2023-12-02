@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"livin-on-a-platter-api/internal/middleware"
+	"livin-on-a-platter-api/api/middleware"
 	"net/http"
 )
 
