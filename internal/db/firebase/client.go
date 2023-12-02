@@ -21,7 +21,7 @@ func (db *FireDB) Connect() error {
 		DatabaseURL: "https://livin-on-a-platter-default-rtdb.firebaseio.com/",
 	}
 	// Fetch the service account key JSON file contents
-	opt := option.WithCredentialsFile("firebase-adminsdk.json")
+	opt := option.WithCredentialsFile("firebase_adminsdk.json")
 
 	// Initialize the app with a service account, granting admin privileges
 	app, err := firebase.NewApp(ctx, conf, opt)
