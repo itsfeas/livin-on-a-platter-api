@@ -8,7 +8,7 @@ import (
 
 type ImageUpload struct {
 	ID        uuid.UUID `json:"id"`
-	FileName  string    `json:"file"`
+	FileType  string    `json:"file"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

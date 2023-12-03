@@ -34,13 +34,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	uuid := uuid.New()
-	repo := repository.NewImageRepository()
-	repo.Create(&model.ImageUpload{
-		ID:        uuid,
-		FileName:  "file",
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
-	})
 
 	storage_client := storage.GetStorage()
 	err = storage_client.StreamFileUpload(&file, "loap-img-storage", uuid.String())
@@ -48,5 +41,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Error streaming file upload: %v", err), http.StatusInternalServerError)
 		return
 	}
+
+	repo := repository.NewImageRepository()
+	repo.Create(&model.ImageUpload{
+		ID:        uuid,
+		FileType:  "png",
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+	})
+
 	w.WriteHeader(http.StatusOK)
 }

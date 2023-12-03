@@ -22,7 +22,7 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 	uuid := uuid.New()
 	repo.Create(&model.ImageUpload{
 		ID:        uuid,
-		FileName:  "file",
+		FileType:  "png",
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 	})
