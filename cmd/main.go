@@ -15,6 +15,7 @@ import (
 // YourHandler is the main handler for your route
 func YourHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+
 	repo := repository.NewImageRepository()
 	repo.Create(&model.ImageUpload{
 		ID:        uuid.New(),
@@ -22,6 +23,7 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 	})
+
 	fmt.Println("message received")
 }
 

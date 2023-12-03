@@ -3,6 +3,7 @@ package firebase
 import (
 	"context"
 	"fmt"
+	"os"
 
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/db"
@@ -16,12 +17,19 @@ type FireDB struct {
 var fireDB FireDB
 
 func (db *FireDB) Connect() error {
+	home, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
 	ctx := context.Background()
 	conf := &firebase.Config{
 		DatabaseURL: "https://livin-on-a-platter-default-rtdb.firebaseio.com/",
 	}
+
 	// Fetch the service account key JSON file contents
-	opt := option.WithCredentialsFile("firebase_adminsdk.json")
+	fmt.Println("finding firebase json @: " + home + "\\firebase_adminsdk.json")
+	opt := option.WithCredentialsFile(home + "\\firebase_adminsdk.json")
 
 	// Initialize the app with a service account, granting admin privileges
 	app, err := firebase.NewApp(ctx, conf, opt)
@@ -40,7 +48,8 @@ func (db *FireDB) Connect() error {
 	if err := ref.Get(ctx, &data); err != nil {
 		return fmt.Errorf("error reading from database: %v", err)
 	}
-	fmt.Println(data)
+	db.Client = client
+	// fmt.Println(data)
 	return nil
 }
 
