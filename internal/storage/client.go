@@ -28,7 +28,7 @@ func (f *FireStorage) Connect() error {
 }
 
 // streamFileUpload uploads an object via a stream.
-func (f *FireStorage) streamFileUpload(w io.Writer, buf *bytes.Buffer, bucket, object string) error {
+func (f *FireStorage) StreamFileUpload(w io.Writer, buf *bytes.Buffer, bucket, object string) error {
 	// bucket := "bucket-name"
 	// object := "object-name"
 	ctx := context.Background()
@@ -50,6 +50,6 @@ func (f *FireStorage) streamFileUpload(w io.Writer, buf *bytes.Buffer, bucket, o
 	return nil
 }
 
-func (f *FireStorage) GetStorage() *FireStorage {
+func GetStorage() *FireStorage {
 	return &fireStorage
 }
