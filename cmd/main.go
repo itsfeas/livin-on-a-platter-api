@@ -31,7 +31,9 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	firebase.GetDB().Connect()
-	storage.GetStorage().Connect()
+	if err := storage.GetStorage().Connect(); err != nil {
+		fmt.Printf("err during storage connection: %v\n", err)
+	}
 	http.HandleFunc("/huh", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "<h1>Hi there, I'm livin-on-a-platter-api!</h1>")
 	})
