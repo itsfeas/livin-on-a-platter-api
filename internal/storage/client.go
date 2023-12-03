@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"os"
 	"time"
 
 	"cloud.google.com/go/storage"
+	"google.golang.org/api/option"
 )
 
 type FireStorage struct {
@@ -18,13 +20,22 @@ type FireStorage struct {
 var fireStorage FireStorage
 
 func (f *FireStorage) Connect() error {
+	home, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+
+	// Fetch the service account key JSON file contents
+	fmt.Println("storage - finding firebase json @: " + home + "/firebase_adminsdk.json")
+	opt := option.WithCredentialsFile(home + "/firebase_adminsdk.json")
+
+	client, err := storage.NewClient(ctx, opt)
 	if err != nil {
 		return fmt.Errorf("storage.NewClient: %w", err)
 	}
 	f.Client = client
-	defer client.Close()
 	return nil
 }
 
