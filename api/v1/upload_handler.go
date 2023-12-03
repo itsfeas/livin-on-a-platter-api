@@ -12,6 +12,7 @@ import (
 )
 
 const MAX_UPLOAD_SIZE = 10_000_000
+const MAX_MEM_SIZE = 1_000_000
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -19,10 +20,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
+	if err := r.ParseMultipartForm(MAX_MEM_SIZE); err != nil {
 		http.Error(w, "file over the maximum size allowed", http.StatusBadRequest)
 		return
 	}
+
 	file, _, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, "Unable to retrieve the file from the form", http.StatusBadRequest)
