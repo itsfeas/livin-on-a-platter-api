@@ -14,7 +14,6 @@ import (
 const MAX_UPLOAD_SIZE = 10_000_000
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
