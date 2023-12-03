@@ -28,8 +28,8 @@ func (db *FireDB) Connect() error {
 	}
 
 	// Fetch the service account key JSON file contents
-	fmt.Println("finding firebase json @: " + home + "\\firebase_adminsdk.json")
-	opt := option.WithCredentialsFile(home + "\\firebase_adminsdk.json")
+	fmt.Println("finding firebase json @: " + home + "/firebase_adminsdk.json")
+	opt := option.WithCredentialsFile(home + "/firebase_adminsdk.json")
 
 	// Initialize the app with a service account, granting admin privileges
 	app, err := firebase.NewApp(ctx, conf, opt)
