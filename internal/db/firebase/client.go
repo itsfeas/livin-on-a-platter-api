@@ -53,6 +53,6 @@ func (db *FireDB) Connect() error {
 	return nil
 }
 
-func FirebaseDB() *FireDB {
+func GetDB() *FireDB {
 	return &fireDB
 }

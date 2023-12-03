@@ -15,7 +15,7 @@ const DOC_PREFIX string = "img_upload/"
 const LOG_PREFIX string = "img-repo | "
 
 func NewImageRepository() *ImageRepository {
-	d := firebase.FirebaseDB()
+	d := firebase.GetDB()
 	return &ImageRepository{
 		FireDB: d,
 	}

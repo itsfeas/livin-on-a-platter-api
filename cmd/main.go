@@ -28,7 +28,7 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	firebase.FirebaseDB().Connect()
+	firebase.GetDB().Connect()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "<h1>Hi there, I'm livin-on-a-platter-api!</h1>")
 	})
