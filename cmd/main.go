@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"livin-on-a-platter-api/api/v1"
 	"livin-on-a-platter-api/internal/db/firebase"
 	"livin-on-a-platter-api/internal/middleware"
 	"livin-on-a-platter-api/internal/model"
@@ -25,9 +26,6 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 	})
-
-	storage_client := storage.GetStorage()
-	storage_client.StreamFileUpload()
 	fmt.Println("message received")
 }
 
@@ -38,8 +36,8 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hi there, I'm livin-on-a-platter-api!</h1>")
 	})
 
-	mainHandler := http.HandlerFunc(YourHandler)
-	manager := middleware.MiddlewareManager(mainHandler, middleware.SuccessResponseMiddleware, middleware.ErrorHandler)
+	mainHandler := http.HandlerFunc(api.UploadHandler)
+	manager := middleware.MiddlewareManager(mainHandler, middleware.CorsManagerMiddleware, middleware.SuccessResponseMiddleware, middleware.ErrorHandler)
 
 	fmt.Println("Server is listening on port 8080...")
 	if err := http.ListenAndServe(":8080", manager); err != nil {
