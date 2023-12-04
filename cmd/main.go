@@ -39,7 +39,7 @@ func main() {
 	})
 
 	mainHandler := http.HandlerFunc(api.UploadHandler)
-	manager := middleware.MiddlewareManager(mainHandler, middleware.CorsManagerMiddleware, middleware.SuccessResponseMiddleware, middleware.ErrorHandler)
+	manager := middleware.MiddlewareManager(mainHandler, middleware.CorsManagerMiddleware, middleware.ErrorHandler)
 
 	fmt.Println("Server is listening on port 8080...")
 	if err := http.ListenAndServe(":8080", manager); err != nil {
