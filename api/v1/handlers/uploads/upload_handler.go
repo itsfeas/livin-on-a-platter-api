@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"livin-on-a-platter-api/internal/model"
 	"livin-on-a-platter-api/internal/repository"
@@ -54,18 +53,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Create a generic success response
-	resp := &response.DataResponse{
-		BaseResponse: &response.BaseResponse{
-			Status: http.StatusOK,
-			Msg:    "ok",
-		},
-		Data: map[string]interface{}{
-			"id": uuid.String(),
-		},
-	}
+	resp := response.DefaultDataResponse()
+	resp.Data["id"] = uuid.String()
 
 	// Convert the success response to JSON
-	jsonResp, err := json.Marshal(resp)
+	jsonResp, err := resp.ToJson()
 	if err != nil {
 		http_util.WriteError(w, "Error encoding JSON", http.StatusInternalServerError)
 		return
