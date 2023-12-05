@@ -19,6 +19,10 @@ func (r *BaseResponse) ToJson() ([]byte, error) {
 	return json.Marshal(r)
 }
 
+func (r *DataResponse) ToJson() ([]byte, error) {
+	return json.Marshal(r)
+}
+
 func DefaultBaseResponse() *BaseResponse {
 	return &BaseResponse{
 		Status: http.StatusOK,
