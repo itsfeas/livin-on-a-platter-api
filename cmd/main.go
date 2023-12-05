@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"livin-on-a-platter-api/api/v1"
 	"livin-on-a-platter-api/internal/db/firebase"
-	"livin-on-a-platter-api/internal/middleware"
 	"livin-on-a-platter-api/internal/model"
 	"livin-on-a-platter-api/internal/repository"
 	"livin-on-a-platter-api/internal/storage"
@@ -38,11 +37,8 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hi there, I'm livin-on-a-platter-api!</h1>")
 	})
 
-	mainHandler := http.HandlerFunc(api.UploadHandler)
-	manager := middleware.MiddlewareManager(mainHandler, middleware.CorsManagerMiddleware, middleware.ErrorHandler)
-
 	fmt.Println("Server is listening on port 8080...")
-	if err := http.ListenAndServe(":8080", manager); err != nil {
+	if err := http.ListenAndServe(":8080", api.Routes()); err != nil {
 		fmt.Printf("Error starting the server: %v\n", err)
 	}
 
