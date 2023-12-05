@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"livin-on-a-platter-api/internal/middleware/writer"
 	"net/http"
 )
 
@@ -9,13 +10,13 @@ import (
 func SuccessResponseMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Create a custom ResponseWriter to intercept the status code
-		customResponseWriter := &CustomResponseWriter{ResponseWriter: w}
+		writer := &writer.CustomResponseWriter{ResponseWriter: w}
 
 		// Call the next handler in the chain
-		next.ServeHTTP(customResponseWriter, r)
+		next.ServeHTTP(writer, r)
 
 		// Check if the status code is within the success range (200-299)
-		if customResponseWriter.statusCode >= http.StatusOK && customResponseWriter.statusCode < http.StatusMultipleChoices {
+		if writer.StatusCode >= http.StatusOK && writer.StatusCode < http.StatusMultipleChoices {
 			// Create a generic success response
 			successResponse := map[string]interface{}{
 				"status": "ok",
@@ -34,16 +35,4 @@ func SuccessResponseMiddleware(next http.Handler) http.Handler {
 			w.Write(jsonResponse)
 		}
 	})
-}
-
-// CustomResponseWriter is a custom ResponseWriter that intercepts the status code
-type CustomResponseWriter struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-// WriteHeader intercepts the status code and stores it
-func (w *CustomResponseWriter) WriteHeader(code int) {
-	w.statusCode = code
-	w.ResponseWriter.WriteHeader(code)
 }
