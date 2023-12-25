@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"livin-on-a-platter-api/api/v1"
 	"livin-on-a-platter-api/internal/db/firebase"
+	"livin-on-a-platter-api/internal/db/storage"
 	"livin-on-a-platter-api/internal/model/img"
 	"livin-on-a-platter-api/internal/repository"
-	"livin-on-a-platter-api/internal/storage"
 	"net/http"
 	"time"
 

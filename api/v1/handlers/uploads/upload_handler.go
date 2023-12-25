@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"livin-on-a-platter-api/internal/db/storage"
 	"livin-on-a-platter-api/internal/model/img"
 	"livin-on-a-platter-api/internal/repository"
 	http_util "livin-on-a-platter-api/internal/responses/error"
 	response "livin-on-a-platter-api/internal/responses/types"
-	"livin-on-a-platter-api/internal/storage"
 	"net/http"
 	"time"
 
