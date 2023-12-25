@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"livin-on-a-platter-api/internal/db/firebase"
-	"livin-on-a-platter-api/internal/model"
+	"livin-on-a-platter-api/internal/model/img"
 )
 
 type ImageRepository struct {
@@ -21,7 +21,7 @@ func NewImageRepository() *ImageRepository {
 	}
 }
 
-func (i *ImageRepository) Create(upload *model.ImageUpload) error {
+func (i *ImageRepository) Create(upload *img.ImageUpload) error {
 	ref := i.NewRef(DOC_PREFIX + upload.ID.String())
 	if err := ref.Set(context.Background(), upload); err != nil {
 		return fmt.Errorf("%s couldn't CREATE upload %s: %v", LOG_PREFIX, upload.ID.String(), err)
@@ -37,7 +37,7 @@ func (i *ImageRepository) Delete(id string) error {
 	return nil
 }
 
-func (i *ImageRepository) Update(upload *model.ImageUpload) error {
+func (i *ImageRepository) Update(upload *img.ImageUpload) error {
 	id := upload.ID.String()
 	ref := i.NewRef(DOC_PREFIX + id)
 	if err := ref.Set(context.Background(), upload); err != nil {
@@ -46,8 +46,8 @@ func (i *ImageRepository) Update(upload *model.ImageUpload) error {
 	return nil
 }
 
-func (i *ImageRepository) FindById(id string) (*model.ImageUpload, error) {
-	upload := &model.ImageUpload{}
+func (i *ImageRepository) FindById(id string) (*img.ImageUpload, error) {
+	upload := &img.ImageUpload{}
 	ref := i.NewRef(DOC_PREFIX + id)
 	err := ref.Get(context.Background(), upload)
 	if err != nil {
@@ -59,7 +59,7 @@ func (i *ImageRepository) FindById(id string) (*model.ImageUpload, error) {
 	return upload, nil
 }
 
-func (i *ImageRepository) Find(upload *model.ImageUpload) (*model.ImageUpload, error) {
+func (i *ImageRepository) Find(upload *img.ImageUpload) (*img.ImageUpload, error) {
 	id := upload.ID.String()
 	ref := i.NewRef(DOC_PREFIX + id)
 	err := ref.Get(context.Background(), upload)

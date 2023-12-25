@@ -1,4 +1,4 @@
-package model
+package img
 
 import (
 	"time"

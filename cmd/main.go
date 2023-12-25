@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"livin-on-a-platter-api/api/v1"
 	"livin-on-a-platter-api/internal/db/firebase"
-	"livin-on-a-platter-api/internal/model"
+	"livin-on-a-platter-api/internal/model/img"
 	"livin-on-a-platter-api/internal/repository"
 	"livin-on-a-platter-api/internal/storage"
 	"net/http"
@@ -19,7 +19,7 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 
 	repo := repository.NewImageRepository()
 	uuid := uuid.New()
-	repo.Create(&model.ImageUpload{
+	repo.Create(&img.ImageUpload{
 		ID:        uuid,
 		FileType:  "png",
 		CreatedAt: time.Now().UTC(),

@@ -1,13 +1,13 @@
 package img2img
 
 import (
-	msg "livin-on-a-platter-api/internal/msg/types"
+	msg2 "livin-on-a-platter-api/internal/model/msg/types"
 	"net/http"
 )
 
 func QueueImg(imgId string) {
-	body := &msg.DataMsg{
-		BaseMsg: msg.DefaultBaseMsg(),
+	body := &msg2.DataMsg{
+		BaseMsg: msg2.DefaultBaseMsg(),
 		Data: map[string]interface{}{
 			"imgId": imgId,
 		},

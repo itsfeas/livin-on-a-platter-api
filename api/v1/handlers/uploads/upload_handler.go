@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"livin-on-a-platter-api/internal/model"
+	"livin-on-a-platter-api/internal/model/img"
 	"livin-on-a-platter-api/internal/repository"
 	http_util "livin-on-a-platter-api/internal/responses/error"
 	response "livin-on-a-platter-api/internal/responses/types"
@@ -45,7 +45,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	repo := repository.NewImageRepository()
-	repo.Create(&model.ImageUpload{
+	repo.Create(&img.ImageUpload{
 		ID:        uuid,
 		FileType:  "png",
 		CreatedAt: time.Now().UTC(),
