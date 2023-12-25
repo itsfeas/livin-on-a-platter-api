@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	msg "livin-on-a-platter-api/internal/msg/types"
+	"livin-on-a-platter-api/internal/model/msg/types"
 	"net/http"
 )
 
