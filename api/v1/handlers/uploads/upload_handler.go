@@ -2,21 +2,21 @@ package handlers
 
 import (
 	"fmt"
-	"livin-on-a-platter-api/internal/db/storage"
-	"livin-on-a-platter-api/internal/model/img"
-	"livin-on-a-platter-api/internal/repository"
-	http_util "livin-on-a-platter-api/internal/responses/error"
-	response "livin-on-a-platter-api/internal/responses/types"
-	"net/http"
-	"time"
-
 	"github.com/google/uuid"
+	"livin-on-a-platter-api/internal/db/storage"
+	img_model "livin-on-a-platter-api/internal/model/img"
+	msg "livin-on-a-platter-api/internal/model/msg/types"
+	"livin-on-a-platter-api/internal/repository"
+	http_util "livin-on-a-platter-api/internal/util/error"
+	"net/http"
+	"os"
 )
 
 const MAX_UPLOAD_SIZE = 10_000_000
 const MAX_MEM_SIZE = 1_000_000
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
+	bucket := os.Getenv("IMG_STORAGE_BUCKET")
 	if r.Method != http.MethodPost {
 		http_util.WriteError(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -35,26 +35,27 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	uuid := uuid.New()
-
-	storage_client := storage.GetStorage()
-	err = storage_client.StreamFileUpload(&file, "loap-img-storage", uuid.String())
+	imgId := uuid.New()
+	storageClient := storage.GetStorage()
+	err = storageClient.StreamFileUpload(&file, bucket, imgId.String())
 	if err != nil {
 		http_util.WriteError(w, fmt.Sprintf("Error streaming file upload: %v", err), http.StatusInternalServerError)
 		return
 	}
 
+	img := &img_model.Image{
+		ID:       imgId,
+		FileType: "png",
+		Version:  0,
+	}
+
+	uploadId := uuid.New()
 	repo := repository.NewImageUploadRepository()
-	repo.Create(&img.ImageUpload{
-		ID:        uuid,
-		FileType:  "png",
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
-	})
+	repo.Create(img_model.NewImageUpload(uploadId, img))
 
 	// Create a generic success response
-	resp := response.DefaultDataResponse()
-	resp.Data["id"] = uuid.String()
+	resp := msg.DefaultDataMsg()
+	resp.Data["id"] = uploadId.String()
 
 	// Convert the success response to JSON
 	jsonResp, err := resp.ToJson()
