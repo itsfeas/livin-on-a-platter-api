@@ -21,7 +21,7 @@ func NewImageUploadRepository() *ImageUploadRepository {
 	}
 }
 
-func (i *ImageUploadRepository) Create(upload *img.ImageUpload) error {
+func (i *ImageUploadRepository) Create(upload *img_model.ImageUpload) error {
 	ref := i.NewRef(docPrefix + upload.UploadId.String())
 	if err := ref.Set(context.Background(), upload); err != nil {
 		return fmt.Errorf("%s couldn't CREATE upload %s: %v", logPrefix, upload.UploadId.String(), err)
@@ -37,7 +37,7 @@ func (i *ImageUploadRepository) Delete(id string) error {
 	return nil
 }
 
-func (i *ImageUploadRepository) Update(upload *img.ImageUpload) error {
+func (i *ImageUploadRepository) Update(upload *img_model.ImageUpload) error {
 	id := upload.UploadId.String()
 	ref := i.NewRef(docPrefix + id)
 	if err := ref.Set(context.Background(), upload); err != nil {
@@ -46,8 +46,8 @@ func (i *ImageUploadRepository) Update(upload *img.ImageUpload) error {
 	return nil
 }
 
-func (i *ImageUploadRepository) FindById(id string) (*img.ImageUpload, error) {
-	upload := &img.ImageUpload{}
+func (i *ImageUploadRepository) FindById(id string) (*img_model.ImageUpload, error) {
+	upload := &img_model.ImageUpload{}
 	ref := i.NewRef(docPrefix + id)
 	err := ref.Get(context.Background(), upload)
 	if err != nil {
@@ -59,7 +59,7 @@ func (i *ImageUploadRepository) FindById(id string) (*img.ImageUpload, error) {
 	return upload, nil
 }
 
-func (i *ImageUploadRepository) Find(upload *img.ImageUpload) (*img.ImageUpload, error) {
+func (i *ImageUploadRepository) Find(upload *img_model.ImageUpload) (*img_model.ImageUpload, error) {
 	id := upload.UploadId.String()
 	ref := i.NewRef(docPrefix + id)
 	err := ref.Get(context.Background(), upload)
