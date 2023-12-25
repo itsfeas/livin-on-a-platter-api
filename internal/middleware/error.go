@@ -17,7 +17,7 @@ func ErrorHandlerMiddleware(next http.Handler) http.Handler {
 				// Respond with an Internal Server Error
 				w.Header().Set("Content-Type", "application/json")
 
-				resp := &response.BaseResponse{
+				resp := &response.BaseMsg{
 					Status: http.StatusInternalServerError,
 					Msg:    "Error on server",
 				}
