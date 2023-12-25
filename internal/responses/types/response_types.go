@@ -1,38 +1,38 @@
-package response
+package Msg
 
 import (
 	"encoding/json"
 	"net/http"
 )
 
-type BaseResponse struct {
+type BaseMsg struct {
 	Status int    `json:"status"`
 	Msg    string `json:"msg"`
 }
 
-type DataResponse struct {
-	*BaseResponse
+type DataMsg struct {
+	*BaseMsg
 	Data map[string]interface{} `json:"data"`
 }
 
-func (r *BaseResponse) ToJson() ([]byte, error) {
+func (r *BaseMsg) ToJson() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *DataResponse) ToJson() ([]byte, error) {
+func (r *DataMsg) ToJson() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func DefaultBaseResponse() *BaseResponse {
-	return &BaseResponse{
+func DefaultBaseMsg() *BaseMsg {
+	return &BaseMsg{
 		Status: http.StatusOK,
 		Msg:    "ok",
 	}
 }
 
-func DefaultDataResponse() *DataResponse {
-	return &DataResponse{
-		BaseResponse: DefaultBaseResponse(),
-		Data:         map[string]interface{}{},
+func DefaultDataMsg() *DataMsg {
+	return &DataMsg{
+		BaseMsg: DefaultBaseMsg(),
+		Data:    map[string]interface{}{},
 	}
 }
