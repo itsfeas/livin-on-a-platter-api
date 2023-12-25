@@ -54,3 +54,5 @@ _testmain.go
 firebase_adminsdk.json
 **/firebase_adminsdk.json
 **/.env
+.idea/
+.idea/**
