@@ -18,18 +18,20 @@ var fireDB FireDB
 
 func (db *FireDB) Connect() error {
 	home, err := os.Getwd()
+	credFile := os.Getenv("DB_CREDENTIALS")
+	firebaseClientUrl := os.Getenv("FB_RTDB_URL")
 	if err != nil {
 		return err
 	}
 
 	ctx := context.Background()
 	conf := &firebase.Config{
-		DatabaseURL: "https://livin-on-a-platter-default-rtdb.firebaseio.com/",
+		DatabaseURL: firebaseClientUrl,
 	}
 
 	// Fetch the service account key JSON file contents
-	fmt.Println("gdb - finding firebase json @: " + home + "/firebase_adminsdk.json")
-	opt := option.WithCredentialsFile(home + "/firebase_adminsdk.json")
+	fmt.Println("gdb - finding firebase json @: " + home + credFile)
+	opt := option.WithCredentialsFile(home + credFile)
 
 	// Initialize the app with a service account, granting admin privileges
 	app, err := firebase.NewApp(ctx, conf, opt)

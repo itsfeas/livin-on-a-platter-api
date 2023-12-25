@@ -21,6 +21,7 @@ var fireStorage FireStorage
 
 func (f *FireStorage) Connect() error {
 	home, err := os.Getwd()
+	credFile := os.Getenv("DB_CREDENTIALS")
 	if err != nil {
 		return err
 	}
@@ -28,8 +29,8 @@ func (f *FireStorage) Connect() error {
 	ctx := context.Background()
 
 	// Fetch the service account key JSON file contents
-	fmt.Println("storage - finding firebase json @: " + home + "/firebase_adminsdk.json")
-	opt := option.WithCredentialsFile(home + "/firebase_adminsdk.json")
+	fmt.Println("storage - finding firebase json @: " + home + credFile)
+	opt := option.WithCredentialsFile(home + credFile)
 
 	client, err := storage.NewClient(ctx, opt)
 	if err != nil {
