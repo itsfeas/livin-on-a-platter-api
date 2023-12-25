@@ -44,7 +44,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	repo := repository.NewImageRepository()
+	repo := repository.NewImageUploadRepository()
 	repo.Create(&img.ImageUpload{
 		ID:        uuid,
 		FileType:  "png",

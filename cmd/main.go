@@ -17,7 +17,7 @@ import (
 func YourHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
-	repo := repository.NewImageRepository()
+	repo := repository.NewImageUploadRepository()
 	uuid := uuid.New()
 	repo.Create(&img.ImageUpload{
 		ID:        uuid,
