@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	response "livin-on-a-platter-api/internal/responses/types"
+	Msg "livin-on-a-platter-api/internal/msg/types"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ func ErrorHandlerMiddleware(next http.Handler) http.Handler {
 				// Respond with an Internal Server Error
 				w.Header().Set("Content-Type", "application/json")
 
-				resp := &response.BaseMsg{
+				resp := &Msg.BaseMsg{
 					Status: http.StatusInternalServerError,
 					Msg:    "Error on server",
 				}
