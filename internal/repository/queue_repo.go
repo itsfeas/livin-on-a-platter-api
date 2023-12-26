@@ -4,54 +4,54 @@ import (
 	"context"
 	"fmt"
 	"livin-on-a-platter-api/internal/db/firebase"
-	"livin-on-a-platter-api/internal/model/img"
+	queue_model "livin-on-a-platter-api/internal/model/queue"
 )
 
-type ImageUploadRepository struct {
+type QueueRepository struct {
 	*firebase.FireDB
 }
 
-const docPrefix string = "img_upload/"
-const logPrefix string = "img-repo | "
+const queueDocPrefix string = "queue/"
+const queueLogPrefix string = "queue-repo | "
 
-func NewImageUploadRepository() *ImageUploadRepository {
+func NewQueueRepository() *QueueRepository {
 	d := firebase.GetDB()
-	return &ImageUploadRepository{
+	return &QueueRepository{
 		FireDB: d,
 	}
 }
 
-func (i *ImageUploadRepository) Create(upload *img_model.ImageUpload) error {
-	ref := i.NewRef(docPrefix + upload.UploadId.String())
-	if err := ref.Set(context.Background(), upload); err != nil {
-		return fmt.Errorf("%s couldn't CREATE upload %s: %v", logPrefix, upload.UploadId.String(), err)
+func (i *QueueRepository) Create(queueItem *queue_model.QueuedImage) error {
+	ref := i.NewRef(queueDocPrefix + queueItem.UploadId.String())
+	if err := ref.Set(context.Background(), queueItem); err != nil {
+		return fmt.Errorf("%s couldn't CREATE queue_item %s: %v", queueLogPrefix, queueItem.UploadId.String(), err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) Delete(id string) error {
-	ref := i.NewRef(docPrefix + id)
+func (i *QueueRepository) Delete(id string) error {
+	ref := i.NewRef(queueDocPrefix + id)
 	if err := ref.Delete(context.Background()); err != nil {
-		return fmt.Errorf("%s couldn't DELETE upload %s: %v", logPrefix, id, err)
+		return fmt.Errorf("%s couldn't DELETE queue_item %s: %v", queueLogPrefix, id, err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) Update(upload *img_model.ImageUpload) error {
-	id := upload.UploadId.String()
-	ref := i.NewRef(docPrefix + id)
-	if err := ref.Set(context.Background(), upload); err != nil {
-		return fmt.Errorf("%s couldn't UPDATE upload %s: %v", logPrefix, id, err)
+func (i *QueueRepository) Update(queueItem *queue_model.QueuedImage) error {
+	id := queueItem.UploadId.String()
+	ref := i.NewRef(queueDocPrefix + id)
+	if err := ref.Set(context.Background(), queueItem); err != nil {
+		return fmt.Errorf("%s couldn't UPDATE queue_item %s: %v", queueLogPrefix, id, err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) FindById(id string) (*img_model.ImageUpload, error) {
-	upload := &img_model.ImageUpload{}
-	ref := i.NewRef(docPrefix + id)
+func (i *QueueRepository) FindById(id string) (*queue_model.QueuedImage, error) {
+	upload := &queue_model.QueuedImage{}
+	ref := i.NewRef(queueDocPrefix + id)
 	err := ref.Get(context.Background(), upload)
 	if err != nil {
-		return nil, fmt.Errorf("%s couldn't FIND_BY_ID upload %s: %v", logPrefix, id, err)
+		return nil, fmt.Errorf("%s couldn't FIND_BY_ID queue_item %s: %v", queueLogPrefix, id, err)
 	}
 	if upload.UploadId.String() == "" {
 		return nil, nil
@@ -59,15 +59,15 @@ func (i *ImageUploadRepository) FindById(id string) (*img_model.ImageUpload, err
 	return upload, nil
 }
 
-func (i *ImageUploadRepository) Find(upload *img_model.ImageUpload) (*img_model.ImageUpload, error) {
-	id := upload.UploadId.String()
-	ref := i.NewRef(docPrefix + id)
-	err := ref.Get(context.Background(), upload)
+func (i *QueueRepository) Find(queueItem *queue_model.QueuedImage) (*queue_model.QueuedImage, error) {
+	id := queueItem.UploadId.String()
+	ref := i.NewRef(queueDocPrefix + id)
+	err := ref.Get(context.Background(), queueItem)
 	if err != nil {
-		return nil, fmt.Errorf("%s couldn't FIND_BY_ID upload %s: %v", logPrefix, id, err)
+		return nil, fmt.Errorf("%s couldn't FIND_BY_ID upload %s: %v", queueLogPrefix, id, err)
 	}
-	if upload.UploadId.String() == "" {
+	if queueItem.UploadId.String() == "" {
 		return nil, nil
 	}
-	return upload, nil
+	return queueItem, nil
 }
