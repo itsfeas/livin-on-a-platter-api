@@ -6,14 +6,17 @@ import (
 	"livin-on-a-platter-api/internal/db/storage"
 	img_model "livin-on-a-platter-api/internal/model/img"
 	msg "livin-on-a-platter-api/internal/model/msg/types"
+	queue_model "livin-on-a-platter-api/internal/model/queue"
 	"livin-on-a-platter-api/internal/repository"
 	http_util "livin-on-a-platter-api/internal/util/error"
 	"net/http"
 	"os"
 )
 
-const MAX_UPLOAD_SIZE = 10_000_000
-const MAX_MEM_SIZE = 1_000_000
+const (
+	MaxUploadSize = 10_000_000
+	MaxMemSize    = 1_000_000
+)
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	bucket := os.Getenv("IMG_STORAGE_BUCKET")
@@ -22,8 +25,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
-	if err := r.ParseMultipartForm(MAX_MEM_SIZE); err != nil {
+	r.Body = http.MaxBytesReader(w, r.Body, MaxUploadSize)
+	if err := r.ParseMultipartForm(MaxMemSize); err != nil {
 		http_util.WriteError(w, "file over the maximum size allowed", http.StatusBadRequest)
 		return
 	}
@@ -39,7 +42,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	storageClient := storage.GetStorage()
 	err = storageClient.StreamFileUpload(&file, bucket, imgId.String())
 	if err != nil {
-		http_util.WriteError(w, fmt.Sprintf("Error streaming file upload: %v", err), http.StatusInternalServerError)
+		http_util.WriteError(
+			w,
+			fmt.Sprintf("Error streaming file upload: %v", err),
+			http.StatusInternalServerError,
+		)
 		return
 	}
 
@@ -50,8 +57,31 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uploadId := uuid.New()
-	repo := repository.NewImageUploadRepository()
-	repo.Create(img_model.NewImageUpload(uploadId, img))
+	imgRepo := repository.NewImageUploadRepository()
+	err = imgRepo.Create(img_model.NewImageUpload(uploadId, img))
+	if err != nil {
+		http_util.WriteError(
+			w,
+			fmt.Sprintf("Error while queueing image: %v", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
+
+	queueRepo := repository.NewQueueRepository()
+	err = queueRepo.Create(&queue_model.QueuedImage{
+		UploadId: uploadId,
+		ImageId:  imgId,
+	})
+	if err != nil {
+		// TODO: Cleanup sequence for ImageRepo document creation
+		http_util.WriteError(
+			w,
+			fmt.Sprintf("Error while queueing image: %v", err),
+			http.StatusInternalServerError,
+		)
+		return
+	}
 
 	// Create a generic success response
 	resp := msg.DefaultDataMsg()
@@ -65,5 +95,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonResp)
+	if _, err := w.Write(jsonResp); err != nil {
+		http_util.WriteError(w, "Error writing JSON", http.StatusInternalServerError)
+		return
+	}
 }
