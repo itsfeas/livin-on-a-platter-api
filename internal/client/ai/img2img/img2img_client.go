@@ -1,16 +1,21 @@
 package img2img
 
 import (
-	msg2 "livin-on-a-platter-api/internal/model/msg/types"
 	"net/http"
+	"os"
 )
 
-func QueueImg(imgId string) {
-	body := &msg2.DataMsg{
-		BaseMsg: msg2.DefaultBaseMsg(),
-		Data: map[string]interface{}{
-			"imgId": imgId,
-		},
+func QueueImg(uploadId string, imgId string) error {
+	apiUrl := os.Getenv("AI_API_URL")
+	//body := &msg2.DataMsg{
+	//	BaseMsg: msg2.DefaultBaseMsg(),
+	//	Data: map[string]interface{}{
+	//		imgId:    imgId,
+	//		uploadId: uploadId,
+	//	},
+	//}
+	if _, err := http.Get(apiUrl + "/queue"); err != nil {
+		return err
 	}
-	http.Get("")
+	return nil
 }
