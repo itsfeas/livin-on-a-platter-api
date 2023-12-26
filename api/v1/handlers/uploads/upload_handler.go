@@ -9,6 +9,7 @@ import (
 	queue_model "livin-on-a-platter-api/internal/model/queue"
 	"livin-on-a-platter-api/internal/repository"
 	http_util "livin-on-a-platter-api/internal/util/error"
+	"mime/multipart"
 	"net/http"
 	"os"
 )
@@ -39,6 +40,32 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	imgId := uuid.New()
+	err, success := uploadFile(w, err, file, bucket, imgId)
+	if success {
+		return
+	}
+
+	uploadId := uuid.New()
+	img := &img_model.Image{
+		ID:       imgId,
+		FileType: "png",
+		Version:  0,
+	}
+
+	err, success = writeImageUploadEntry(w, uploadId, img)
+	if success {
+		return
+	}
+
+	err, success = queueImage(w, uploadId, imgId)
+	if success {
+		return
+	}
+
+	respond(w, uploadId)
+}
+
+func uploadFile(w http.ResponseWriter, err error, file multipart.File, bucket string, imgId uuid.UUID) (error, bool) {
 	storageClient := storage.GetStorage()
 	err = storageClient.StreamFileUpload(&file, bucket, imgId.String())
 	if err != nil {
@@ -47,29 +74,28 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("Error streaming file upload: %v", err),
 			http.StatusInternalServerError,
 		)
-		return
+		return nil, true
 	}
+	return err, false
+}
 
-	img := &img_model.Image{
-		ID:       imgId,
-		FileType: "png",
-		Version:  0,
-	}
-
-	uploadId := uuid.New()
+func writeImageUploadEntry(w http.ResponseWriter, uploadId uuid.UUID, img *img_model.Image) (error, bool) {
 	imgRepo := repository.NewImageUploadRepository()
-	err = imgRepo.Create(img_model.NewImageUpload(uploadId, img))
+	err := imgRepo.Create(img_model.NewImageUpload(uploadId, img))
 	if err != nil {
 		http_util.WriteError(
 			w,
 			fmt.Sprintf("Error while queueing image: %v", err),
 			http.StatusInternalServerError,
 		)
-		return
+		return nil, true
 	}
+	return err, false
+}
 
+func queueImage(w http.ResponseWriter, uploadId uuid.UUID, imgId uuid.UUID) (error, bool) {
 	queueRepo := repository.NewQueueRepository()
-	err = queueRepo.Create(&queue_model.QueuedImage{
+	err := queueRepo.Create(&queue_model.QueuedImage{
 		UploadId: uploadId,
 		ImageId:  imgId,
 	})
@@ -80,9 +106,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Sprintf("Error while queueing image: %v", err),
 			http.StatusInternalServerError,
 		)
-		return
+		return err, true
 	}
+	return err, false
+}
 
+func respond(w http.ResponseWriter, uploadId uuid.UUID) {
 	// Create a generic success response
 	resp := msg.DefaultDataMsg()
 	resp.Data["id"] = uploadId.String()
