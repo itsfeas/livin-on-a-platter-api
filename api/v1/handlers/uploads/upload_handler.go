@@ -52,6 +52,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		Version:  0,
 	}
 
+	err, success = addImageUploadEntry(w, img)
+	if success {
+		return
+	}
+
 	err, success = writeImageUploadEntry(w, uploadId, img)
 	if success {
 		return
@@ -80,8 +85,22 @@ func uploadFile(w http.ResponseWriter, err error, file multipart.File, bucket st
 }
 
 func writeImageUploadEntry(w http.ResponseWriter, uploadId uuid.UUID, img *img_model.Image) (error, bool) {
-	imgRepo := repository.NewImageRepository()
+	imgRepo := repository.NewImageUploadRepository()
 	err := imgRepo.Create(img_model.NewImageUpload(uploadId, img))
+	if err != nil {
+		http_util.WriteError(
+			w,
+			fmt.Sprintf("Error while queueing image_upload: %v", err),
+			http.StatusInternalServerError,
+		)
+		return nil, true
+	}
+	return err, false
+}
+
+func addImageUploadEntry(w http.ResponseWriter, img *img_model.Image) (error, bool) {
+	imgRepo := repository.NewImageRepository()
+	err := imgRepo.Create(img)
 	if err != nil {
 		http_util.WriteError(
 			w,
