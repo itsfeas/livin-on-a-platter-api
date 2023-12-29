@@ -80,7 +80,7 @@ func uploadFile(w http.ResponseWriter, err error, file multipart.File, bucket st
 }
 
 func writeImageUploadEntry(w http.ResponseWriter, uploadId uuid.UUID, img *img_model.Image) (error, bool) {
-	imgRepo := repository.NewImageUploadRepository()
+	imgRepo := repository.NewImageRepository()
 	err := imgRepo.Create(img_model.NewImageUpload(uploadId, img))
 	if err != nil {
 		http_util.WriteError(

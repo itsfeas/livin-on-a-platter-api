@@ -7,46 +7,46 @@ import (
 	"livin-on-a-platter-api/internal/model/img"
 )
 
-type ImageUploadRepository struct {
+type ImageRepository struct {
 	*firebase.FireDB
 }
 
-const imgDocPrefix string = "img_upload/"
+const imgDocPrefix string = "images/"
 const imgLogPrefix string = "img-repo | "
 
-func NewImageUploadRepository() *ImageUploadRepository {
+func NewImageRepository() *ImageRepository {
 	d := firebase.GetDB()
-	return &ImageUploadRepository{
+	return &ImageRepository{
 		FireDB: d,
 	}
 }
 
-func (i *ImageUploadRepository) Create(upload *img_model.ImageUpload) error {
-	ref := i.NewRef(imgDocPrefix + upload.UploadId.String())
-	if err := ref.Set(context.Background(), upload); err != nil {
-		return fmt.Errorf("%s couldn't CREATE upload %s: %v", imgLogPrefix, upload.UploadId.String(), err)
+func (i *ImageRepository) Create(image *img_model.Image) error {
+	ref := i.NewRef(imgDocPrefix + image.ID.String())
+	if err := ref.Set(context.Background(), image); err != nil {
+		return fmt.Errorf("%s couldn't CREATE image entry %s: %v", imgLogPrefix, image.ID.String(), err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) Delete(id string) error {
+func (i *ImageRepository) Delete(id string) error {
 	ref := i.NewRef(imgDocPrefix + id)
 	if err := ref.Delete(context.Background()); err != nil {
-		return fmt.Errorf("%s couldn't DELETE upload %s: %v", imgLogPrefix, id, err)
+		return fmt.Errorf("%s couldn't DELETE image entry %s: %v", imgLogPrefix, id, err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) Update(upload *img_model.ImageUpload) error {
+func (i *ImageRepository) Update(upload *img_model.ImageUpload) error {
 	id := upload.UploadId.String()
 	ref := i.NewRef(imgDocPrefix + id)
 	if err := ref.Set(context.Background(), upload); err != nil {
-		return fmt.Errorf("%s couldn't UPDATE upload %s: %v", imgLogPrefix, id, err)
+		return fmt.Errorf("%s couldn't UPDATE image entry %s: %v", imgLogPrefix, id, err)
 	}
 	return nil
 }
 
-func (i *ImageUploadRepository) FindById(id string) (*img_model.ImageUpload, error) {
+func (i *ImageRepository) FindById(id string) (*img_model.ImageUpload, error) {
 	upload := &img_model.ImageUpload{}
 	ref := i.NewRef(imgDocPrefix + id)
 	err := ref.Get(context.Background(), upload)
@@ -59,12 +59,12 @@ func (i *ImageUploadRepository) FindById(id string) (*img_model.ImageUpload, err
 	return upload, nil
 }
 
-func (i *ImageUploadRepository) Find(upload *img_model.ImageUpload) (*img_model.ImageUpload, error) {
+func (i *ImageRepository) Find(upload *img_model.ImageUpload) (*img_model.ImageUpload, error) {
 	id := upload.UploadId.String()
 	ref := i.NewRef(imgDocPrefix + id)
 	err := ref.Get(context.Background(), upload)
 	if err != nil {
-		return nil, fmt.Errorf("%s couldn't FIND_BY_ID upload %s: %v", imgLogPrefix, id, err)
+		return nil, fmt.Errorf("%s couldn't FIND_BY_ID image entry %s: %v", imgLogPrefix, id, err)
 	}
 	if upload.UploadId.String() == "" {
 		return nil, nil
