@@ -11,7 +11,7 @@ type QueueRepository struct {
 	*firebase.FireDB
 }
 
-const queueDocPrefix string = "gen-queue/"
+const queueDocPrefix string = "gen_queue/"
 const queueLogPrefix string = "queue-repo | "
 
 func NewQueueRepository() *QueueRepository {
