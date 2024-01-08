@@ -69,12 +69,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = img2img.GenerateImg(imgId.String())
+	response, err := img2img.GenerateImg(imgId.String())
 	if err != nil {
 		return
 	}
 
-	respond(w, uploadId)
+	respond(w, response.Msg)
 }
 
 func uploadFile(w http.ResponseWriter, err error, file multipart.File, bucket string, imgId uuid.UUID) (error, bool) {
@@ -137,10 +137,10 @@ func queueImage(w http.ResponseWriter, uploadId uuid.UUID, imgId uuid.UUID) (err
 	return err, false
 }
 
-func respond(w http.ResponseWriter, uploadId uuid.UUID) {
+func respond(w http.ResponseWriter, uploadId string) {
 	// Create a generic success response
 	resp := msg.DefaultDataMsg()
-	resp.Data["id"] = uploadId.String()
+	resp.Data["id"] = uploadId
 
 	// Convert the success response to JSON
 	jsonResp, err := resp.ToJson()
