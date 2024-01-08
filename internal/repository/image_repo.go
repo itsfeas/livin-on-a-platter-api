@@ -4,14 +4,14 @@ import (
 	"context"
 	"fmt"
 	"livin-on-a-platter-api/internal/db/firebase"
-	"livin-on-a-platter-api/internal/model/img"
+	img_model "livin-on-a-platter-api/internal/model/img"
 )
 
 type ImageRepository struct {
 	*firebase.FireDB
 }
 
-const imgDocPrefix string = "images/"
+const imgDocPrefix string = "images_doc/"
 const imgLogPrefix string = "img-repo | "
 
 func NewImageRepository() *ImageRepository {
