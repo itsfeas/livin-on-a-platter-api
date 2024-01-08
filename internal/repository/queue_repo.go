@@ -22,9 +22,9 @@ func NewQueueRepository() *QueueRepository {
 }
 
 func (i *QueueRepository) Create(queueItem *queue_model.QueuedImage) error {
-	ref := i.NewRef(queueDocPrefix + queueItem.UploadId.String())
+	ref := i.NewRef(queueDocPrefix + queueItem.ImageId.String())
 	if err := ref.Set(context.Background(), queueItem); err != nil {
-		return fmt.Errorf("%s couldn't CREATE queue_item %s: %v", queueLogPrefix, queueItem.UploadId.String(), err)
+		return fmt.Errorf("%s couldn't CREATE queue_item %s: %v", queueLogPrefix, queueItem.ImageId.String(), err)
 	}
 	return nil
 }
