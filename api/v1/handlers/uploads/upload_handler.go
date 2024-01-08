@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/google/uuid"
+	"livin-on-a-platter-api/internal/client/ai/img2img"
 	"livin-on-a-platter-api/internal/db/storage"
 	img_model "livin-on-a-platter-api/internal/model/img"
 	msg "livin-on-a-platter-api/internal/model/msg/types"
@@ -12,6 +12,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -64,6 +66,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	err, success = queueImage(w, uploadId, imgId)
 	if success {
+		return
+	}
+
+	err = img2img.GenerateImg(imgId.String())
+	if err != nil {
 		return
 	}
 

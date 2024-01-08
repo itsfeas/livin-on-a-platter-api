@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func QueueImg(uploadId string, imgId string) error {
+func GenerateImg(queuedImgId string) error {
 	apiUrl := os.Getenv("AI_API_URL")
 	//body := &msg2.DataMsg{
 	//	BaseMsg: msg2.DefaultBaseMsg(),
@@ -14,7 +14,7 @@ func QueueImg(uploadId string, imgId string) error {
 	//		uploadId: uploadId,
 	//	},
 	//}
-	if _, err := http.Get(apiUrl + "/queue"); err != nil {
+	if _, err := http.Get(apiUrl + "/queue/" + queuedImgId); err != nil {
 		return err
 	}
 	return nil
