@@ -14,7 +14,7 @@ func GenerateImg(queuedImgId string) error {
 	//		uploadId: uploadId,
 	//	},
 	//}
-	if _, err := http.Get(apiUrl + "/queue/" + queuedImgId); err != nil {
+	if _, err := http.Get(apiUrl + "generate/" + queuedImgId); err != nil {
 		return err
 	}
 	return nil
