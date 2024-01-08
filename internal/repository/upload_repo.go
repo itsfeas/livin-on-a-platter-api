@@ -11,8 +11,8 @@ type ImageUploadRepository struct {
 	*firebase.FireDB
 }
 
-const uploadDocPrefix string = "img_upload/"
-const uploadLogPrefix string = "upload-repo | "
+const uploadDocPrefix string = "img_upload_doc/"
+const uploadLogPrefix string = "imupload-repo | "
 
 func NewImageUploadRepository() *ImageUploadRepository {
 	d := firebase.GetDB()
