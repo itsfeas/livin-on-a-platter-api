@@ -5,6 +5,6 @@ import (
 )
 
 type QueuedImage struct {
-	UploadId uuid.UUID `json:"id"`
+	UploadId uuid.UUID `json:"upload_id"`
 	ImageId  uuid.UUID `json:"image_id"`
 }
