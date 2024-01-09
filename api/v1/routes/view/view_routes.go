@@ -7,6 +7,6 @@ import (
 
 func ViewRoutes() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/view", handlers.ViewHandler)
+	mux.HandleFunc("/", handlers.ViewHandler)
 	return mux
 }
