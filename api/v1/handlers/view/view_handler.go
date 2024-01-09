@@ -10,7 +10,7 @@ import (
 	"regexp"
 )
 
-var uuidRegex = regexp.MustCompile(`/view/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`)
+var uuidRegex = regexp.MustCompile(`/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`)
 
 func ViewHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
