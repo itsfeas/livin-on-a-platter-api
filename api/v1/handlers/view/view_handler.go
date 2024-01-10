@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"livin-on-a-platter-api/internal/db/storage"
 	msg "livin-on-a-platter-api/internal/model/msg/types"
 	http_util "livin-on-a-platter-api/internal/util/error"
@@ -18,6 +19,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	bucket := os.Getenv("IMG_STORAGE_BUCKET")
+	fmt.Println("bucket: ", bucket)
 
 	fb := storage.GetStorage()
 

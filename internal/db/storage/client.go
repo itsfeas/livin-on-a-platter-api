@@ -87,15 +87,15 @@ func (f *FireStorage) StreamFileUpload(file *multipart.File, bucket, object stri
 }
 
 func (f *FireStorage) ExposeImage(imgId string, bucket string) (string, error) {
-	url_str, err := f.Bucket(bucket).SignedURL(imgId, &storage.SignedURLOptions{
+	opts := &storage.SignedURLOptions{
 		Scheme:  storage.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(1 * time.Hour),
-	})
+		Expires: time.Now().Add(15 * time.Minute),
+	}
 
+	url_str, err := f.Bucket(bucket).SignedURL(imgId, opts)
 	if err != nil {
-		fmt.Println("Error getting signed url: ", err)
-		return "", err
+		return "", fmt.Errorf("Bucket(%q).SignedURL: %w", bucket, err)
 	}
 
 	return url_str, nil
