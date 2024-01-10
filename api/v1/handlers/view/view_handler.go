@@ -27,7 +27,7 @@ func ViewHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	imgUrl, err := fb.ExposeImage(bucket, imgId)
+	imgUrl, err := fb.ExposeImage(imgId, bucket)
 	if err != nil {
 		http_util.WriteError(w, "Could not expose image URL", http.StatusInternalServerError)
 		return
